@@ -1,24 +1,21 @@
-import react from '@vitejs/plugin-react-swc';
-import path from 'path';
 import { defineConfig } from 'vite';
-import svgr from 'vite-plugin-svgr';
+import react from '@vitejs/plugin-react';
 import tsconfigPaths from 'vite-tsconfig-paths';
+import path from 'path';
 
-// https://vitejs.dev/config/
 export default defineConfig({
-  build: {
-    sourcemap: true
-  },
-  plugins: [react(), tsconfigPaths(), svgr()],
+  plugins: [
+    react(),
+    tsconfigPaths(), // resolves tsconfig paths automatically
+  ],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src'),
-      // To prevent conflicts with packages in @chainlit/react-client, we need to specify the resolution paths for these dependencies.
-      react: path.resolve(__dirname, './node_modules/react'),
-      'usehooks-ts': path.resolve(__dirname, './node_modules/usehooks-ts'),
-      sonner: path.resolve(__dirname, './node_modules/sonner'),
-      lodash: path.resolve(__dirname, './node_modules/lodash'),
-      recoil: path.resolve(__dirname, './node_modules/recoil')
-    }
-  }
+      // fallback in case tsconfigPaths fails
+      '@chainlit/react-client': path.resolve(__dirname, '../libs/react-client/dist'),
+    },
+  },
+  build: {
+    target: 'esnext', // modern JS output
+    sourcemap: true,
+  },
 });
